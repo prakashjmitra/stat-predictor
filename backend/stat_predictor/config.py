@@ -11,10 +11,14 @@ class DataConfig:
     """Settings describing how to load the historical match dataset."""
 
     data_path: Path
+    source_url: Optional[str] = None
     target_columns: List[str] = field(
         default_factory=lambda: [
             "player_aces",
             "player_double_faults",
+            "player_first_serve_points_won",
+            "player_second_serve_points_won",
+            "player_break_points_saved",
             "player_service_games_won",
             "player_return_games_won",
             "player_games_won",
@@ -48,11 +52,22 @@ class TrainingConfig:
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
 
+DEFAULT_DATA_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "backend"
+    / "data"
+    / "atp_matches_recent.csv"
+)
+
+DEFAULT_DATA_URL = (
+    "https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_matches_2023.csv"
+)
 DEFAULT_DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "sample_matches.csv"
 
 
 def default_training_config(output_dir: Path | None = None) -> TrainingConfig:
     output_dir = output_dir or Path(__file__).resolve().parents[2] / "backend" / "artifacts"
+    data_config = DataConfig(data_path=DEFAULT_DATA_PATH, source_url=DEFAULT_DATA_URL)
     data_config = DataConfig(data_path=DEFAULT_DATA_PATH)
     model_config = ModelConfig(
         categorical_features=[

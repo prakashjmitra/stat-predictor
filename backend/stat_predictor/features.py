@@ -5,6 +5,8 @@ from typing import Iterable, List, Optional
 
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
@@ -21,6 +23,12 @@ def build_feature_pipeline(
         transformers.append(
             (
                 "categorical",
+                Pipeline(
+                    [
+                        ("impute", SimpleImputer(strategy="most_frequent")),
+                        ("encode", OneHotEncoder(handle_unknown="ignore")),
+                    ]
+                ),
                 OneHotEncoder(handle_unknown="ignore"),
                 categorical,
             )
@@ -29,6 +37,12 @@ def build_feature_pipeline(
         transformers.append(
             (
                 "numerical",
+                Pipeline(
+                    [
+                        ("impute", SimpleImputer(strategy="median")),
+                        ("scale", StandardScaler()),
+                    ]
+                ),
                 StandardScaler(),
                 numerical,
             )

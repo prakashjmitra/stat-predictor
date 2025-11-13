@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Iterable, List
 from pathlib import Path
 from typing import Dict, Iterable
 
@@ -31,6 +34,22 @@ def _evaluate_predictions(
     return metrics
 
 
+@dataclass
+class TrainingResult:
+    """Container summarizing a completed training run."""
+
+    metrics: Dict[str, Dict[str, float]]
+    feature_columns: List[str]
+    target_columns: List[str]
+    predictions: pd.DataFrame
+    model_path: Path
+    metrics_path: Path
+    metadata_path: Path
+    predictions_path: Path
+
+
+def train_and_evaluate(config: TrainingConfig) -> TrainingResult:
+    """Train the model defined by ``config`` and return artifacts."""
 def train_and_evaluate(config: TrainingConfig) -> Dict[str, Dict[str, float]]:
     """Train the model defined by ``config`` and return evaluation metrics."""
 
@@ -54,11 +73,31 @@ def train_and_evaluate(config: TrainingConfig) -> Dict[str, Dict[str, float]]:
     predictions = pipeline.predict(x_test_full)
     metrics = _evaluate_predictions(y_test, predictions, config.data.target_columns)
 
+    prediction_table = _build_prediction_table(
+        test_df,
+        predictions,
+        config.data.target_columns,
+    )
+
+    model_path, metrics_path, metadata_path, predictions_path = _save_artifacts(
     _save_artifacts(
         pipeline=pipeline,
         metrics=metrics,
         config=config,
         feature_columns=feature_columns,
+        predictions=prediction_table,
+    )
+
+    return TrainingResult(
+        metrics=metrics,
+        feature_columns=list(feature_columns),
+        target_columns=list(config.data.target_columns),
+        predictions=prediction_table,
+        model_path=model_path,
+        metrics_path=metrics_path,
+        metadata_path=metadata_path,
+        predictions_path=predictions_path,
+    )
     )
     return metrics
 
@@ -69,12 +108,15 @@ def _save_artifacts(
     metrics: Dict[str, Dict[str, float]],
     config: TrainingConfig,
     feature_columns: Iterable[str],
+    predictions: pd.DataFrame,
+) -> tuple[Path, Path, Path, Path]:
 ) -> None:
     """Persist the trained pipeline and evaluation metrics to disk."""
 
     model_path = Path(config.output_dir) / "trained_model.joblib"
     metrics_path = Path(config.output_dir) / "metrics.json"
     metadata_path = Path(config.output_dir) / "metadata.json"
+    predictions_path = Path(config.output_dir) / "predictions.json"
 
     joblib.dump(pipeline, model_path)
     with metrics_path.open("w", encoding="utf-8") as f:
@@ -87,3 +129,33 @@ def _save_artifacts(
     }
     with metadata_path.open("w", encoding="utf-8") as f:
         json.dump(metadata, f, indent=2)
+
+    prediction_payload = predictions.copy()
+    if "date" in prediction_payload.columns:
+        prediction_payload["date"] = prediction_payload["date"].astype(str)
+    prediction_payload.to_json(predictions_path, orient="records", indent=2)
+
+    return model_path, metrics_path, metadata_path, predictions_path
+
+
+def _build_prediction_table(
+    test_df: pd.DataFrame,
+    predictions: np.ndarray,
+    target_columns: Iterable[str],
+) -> pd.DataFrame:
+    """Return a dataframe summarizing predictions for the latest matches."""
+
+    summary_columns = [
+        column
+        for column in ["date", "tournament", "round", "player", "opponent"]
+        if column in test_df.columns
+    ]
+    summary = test_df[summary_columns].copy()
+
+    prediction_columns = [f"predicted_{col}" for col in target_columns]
+    prediction_df = pd.DataFrame(predictions, columns=prediction_columns, index=test_df.index)
+
+    actual_df = test_df[list(target_columns)].copy()
+    actual_df.columns = [f"actual_{col}" for col in target_columns]
+
+    return pd.concat([summary, prediction_df, actual_df], axis=1).reset_index(drop=True)
