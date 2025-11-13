@@ -1,6 +1,7 @@
 """Feature engineering helpers for the stat predictor."""
 from __future__ import annotations
 
+from typing import Iterable, List, Optional, Tuple
 from typing import Iterable, List, Optional
 
 import pandas as pd
@@ -18,6 +19,7 @@ def build_feature_pipeline(
     categorical = list(categorical or [])
     numerical = list(numerical or [])
 
+    transformers: List[Tuple[str, object, List[str]]] = []
     transformers: List[tuple[str, object, List[str]]] = []
     if categorical:
         transformers.append(

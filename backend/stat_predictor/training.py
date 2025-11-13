@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Dict, Iterable, List, Tuple
 from typing import Dict, Iterable, List
 from pathlib import Path
 from typing import Dict, Iterable
@@ -109,6 +110,7 @@ def _save_artifacts(
     config: TrainingConfig,
     feature_columns: Iterable[str],
     predictions: pd.DataFrame,
+) -> Tuple[Path, Path, Path, Path]:
 ) -> tuple[Path, Path, Path, Path]:
 ) -> None:
     """Persist the trained pipeline and evaluation metrics to disk."""

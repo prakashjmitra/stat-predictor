@@ -2,6 +2,8 @@
 
 This repository provides a complete, reproducible pipeline for training a machine
 learning model that forecasts per-match tennis statistics such as aces, double
+faults, first/second-serve points won, and break points saved for upcoming
+tournaments.
 faults, and games won for upcoming tournaments.
 
 ## Project structure
@@ -9,6 +11,7 @@ faults, and games won for upcoming tournaments.
 ```
 backend/            Python package and command line tools for modeling
   requirements.txt  Dependency list for the backend
+  train_model.py    CLI entry point that trains the model and exports predictions
   train_model.py    CLI entry point that trains the model
   predict_stats.py  CLI entry point that generates predictions
   stat_predictor/   Core Python package with reusable components
@@ -33,6 +36,25 @@ data/
    pip install -r requirements.txt
    ```
 
+2. Train the model. Without any additional flags the command downloads the latest
+   ATP results for 2023 from Jeff Sackmann's public tennis dataset, performs
+   training, evaluation, and exports a set of ready-to-use predictions for the
+   most recent matches:
+
+   ```bash
+   python train_model.py
+   ```
+
+   The command creates an `artifacts/` directory (or uses the one you pass via
+   `--output`) with the following files:
+
+   * `trained_model.joblib` – the serialized scikit-learn pipeline
+   * `metrics.json` – evaluation metrics (MAE and RMSE) per predicted statistic
+    * `metadata.json` – helper metadata for downstream prediction jobs
+    * `predictions.json` – predicted statistics for the latest evaluation matches
+
+   To train on a different dataset, supply `--data <path-to-csv>` and optionally
+   `--output <directory>`.
 2. Train the model using the bundled sample dataset or provide your own historical
    match CSV that follows the same schema:
 
@@ -73,11 +95,15 @@ The historical training CSV must contain the following columns:
 * `player_height_cm`, `opponent_height_cm` – heights in centimeters
 * `player_hand`, `opponent_hand` – playing hand (R/L)
 * `best_of` – match format (3 or 5 sets)
+* `match_duration_minutes` – total match duration (use an estimated value if unknown)
 * `match_duration_minutes` – total match duration
 * Target columns for the statistics you want to predict. By default, the model
   expects:
   * `player_aces`
   * `player_double_faults`
+  * `player_first_serve_points_won`
+  * `player_second_serve_points_won`
+  * `player_break_points_saved`
   * `player_service_games_won`
   * `player_return_games_won`
   * `player_games_won`
@@ -90,4 +116,6 @@ using the package programmatically.
 
 The project ships with a small synthetic dataset (`data/sample_matches.csv`) so
 that the entire pipeline can be executed end-to-end without external data. Replace
+this file with richer historical data to train a production-ready model or let the
+default training script download the public ATP results automatically.
 this file with richer historical data to train a production-ready model.

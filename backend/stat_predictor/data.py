@@ -3,6 +3,10 @@ from __future__ import annotations
 
 import textwrap
 from pathlib import Path
+from typing import Iterable, List, Tuple
+
+import pandas as pd
+import requests
 from typing import Iterable, List
 
 import pandas as pd
@@ -146,6 +150,7 @@ def _transform_atp_matches(df: pd.DataFrame) -> pd.DataFrame:
 
 def split_train_test(
     df: pd.DataFrame, config: DataConfig
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Split a dataframe into train and test partitions by date."""
 
@@ -165,6 +170,7 @@ def split_train_test(
 
 def get_feature_target_frames(
     df: pd.DataFrame, target_columns: Iterable[str]
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Return the feature and target frames from a dataframe."""
 
