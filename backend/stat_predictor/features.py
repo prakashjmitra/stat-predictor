@@ -29,6 +29,7 @@ def build_feature_pipeline(
                         ("encode", OneHotEncoder(handle_unknown="ignore")),
                     ]
                 ),
+                OneHotEncoder(handle_unknown="ignore"),
                 categorical,
             )
         )
@@ -42,6 +43,7 @@ def build_feature_pipeline(
                         ("scale", StandardScaler()),
                     ]
                 ),
+                StandardScaler(),
                 numerical,
             )
         )

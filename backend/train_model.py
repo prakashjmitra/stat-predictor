@@ -6,6 +6,7 @@ from pathlib import Path
 
 from stat_predictor.config import TrainingConfig, default_training_config
 from stat_predictor.training import TrainingResult, train_and_evaluate
+from stat_predictor.training import train_and_evaluate
 
 
 def parse_args() -> argparse.Namespace:
@@ -40,6 +41,10 @@ def main() -> None:
     print(f"  Metrics: {result.metrics_path}")
     print(f"  Metadata: {result.metadata_path}")
     print(f"  Predictions: {result.predictions_path}")
+
+    metrics = train_and_evaluate(config)
+    for target, values in metrics.items():
+        print(f"{target} - MAE: {values['mae']:.2f} | RMSE: {values['rmse']:.2f}")
 
 
 if __name__ == "__main__":

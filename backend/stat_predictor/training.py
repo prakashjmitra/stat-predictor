@@ -5,6 +5,8 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List
+from pathlib import Path
+from typing import Dict, Iterable
 
 import joblib
 import numpy as np
@@ -48,6 +50,8 @@ class TrainingResult:
 
 def train_and_evaluate(config: TrainingConfig) -> TrainingResult:
     """Train the model defined by ``config`` and return artifacts."""
+def train_and_evaluate(config: TrainingConfig) -> Dict[str, Dict[str, float]]:
+    """Train the model defined by ``config`` and return evaluation metrics."""
 
     config.ensure_output_dir()
 
@@ -76,6 +80,7 @@ def train_and_evaluate(config: TrainingConfig) -> TrainingResult:
     )
 
     model_path, metrics_path, metadata_path, predictions_path = _save_artifacts(
+    _save_artifacts(
         pipeline=pipeline,
         metrics=metrics,
         config=config,
@@ -93,6 +98,8 @@ def train_and_evaluate(config: TrainingConfig) -> TrainingResult:
         metadata_path=metadata_path,
         predictions_path=predictions_path,
     )
+    )
+    return metrics
 
 
 def _save_artifacts(
@@ -103,6 +110,7 @@ def _save_artifacts(
     feature_columns: Iterable[str],
     predictions: pd.DataFrame,
 ) -> tuple[Path, Path, Path, Path]:
+) -> None:
     """Persist the trained pipeline and evaluation metrics to disk."""
 
     model_path = Path(config.output_dir) / "trained_model.joblib"

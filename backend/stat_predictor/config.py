@@ -19,6 +19,9 @@ class DataConfig:
             "player_first_serve_points_won",
             "player_second_serve_points_won",
             "player_break_points_saved",
+            "player_service_games_won",
+            "player_return_games_won",
+            "player_games_won",
         ]
     )
     date_column: str = "date"
@@ -59,11 +62,13 @@ DEFAULT_DATA_PATH = (
 DEFAULT_DATA_URL = (
     "https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master/atp_matches_2023.csv"
 )
+DEFAULT_DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "sample_matches.csv"
 
 
 def default_training_config(output_dir: Path | None = None) -> TrainingConfig:
     output_dir = output_dir or Path(__file__).resolve().parents[2] / "backend" / "artifacts"
     data_config = DataConfig(data_path=DEFAULT_DATA_PATH, source_url=DEFAULT_DATA_URL)
+    data_config = DataConfig(data_path=DEFAULT_DATA_PATH)
     model_config = ModelConfig(
         categorical_features=[
             "surface",
