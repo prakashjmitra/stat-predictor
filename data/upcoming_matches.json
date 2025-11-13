@@ -1,0 +1,19 @@
+[
+  {
+    "tournament": "Shanghai Masters",
+    "surface": "Hard",
+    "round": "Quarterfinal",
+    "player": "Player U",
+    "opponent": "Player V",
+    "player_rank": 7,
+    "opponent_rank": 18,
+    "player_age": 26,
+    "opponent_age": 28,
+    "player_height_cm": 189,
+    "opponent_height_cm": 186,
+    "player_hand": "R",
+    "opponent_hand": "L",
+    "best_of": 3,
+    "match_duration_minutes": 115
+  }
+]

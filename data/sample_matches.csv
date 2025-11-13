@@ -1,0 +1,11 @@
+date,tournament,surface,round,player,opponent,player_rank,opponent_rank,player_age,opponent_age,player_height_cm,opponent_height_cm,player_hand,opponent_hand,best_of,match_duration_minutes,player_aces,player_double_faults,player_service_games_won,player_return_games_won,player_games_won
+2023-01-10,Australian Open,Hard,Round of 64,Player A,Player B,5,48,26,29,188,185,R,R,5,125,14,3,19,3,31
+2023-01-12,Australian Open,Hard,Round of 32,Player C,Player D,18,25,24,28,183,191,R,L,5,140,11,2,18,4,29
+2023-02-18,Rio Open,Clay,Quarterfinal,Player E,Player F,12,33,27,31,190,187,L,R,3,115,9,1,15,2,24
+2023-03-22,Miami Open,Hard,Round of 16,Player G,Player H,8,14,25,27,185,188,R,R,3,98,7,2,13,3,21
+2023-04-17,Monte Carlo Masters,Clay,Round of 32,Player I,Player J,3,40,28,30,193,182,R,R,3,110,6,1,14,2,23
+2023-05-29,French Open,Clay,Round of 64,Player K,Player L,21,16,24,29,180,188,L,R,5,165,12,4,17,5,27
+2023-06-30,Wimbledon,Grass,Round of 64,Player M,Player N,9,55,26,33,191,190,R,L,5,150,18,5,20,2,33
+2023-07-04,Wimbledon,Grass,Round of 32,Player O,Player P,14,11,27,26,187,185,R,R,5,142,15,2,19,4,30
+2023-08-16,Cincinnati Masters,Hard,Quarterfinal,Player Q,Player R,6,19,29,28,192,189,R,R,3,105,10,1,16,3,25
+2023-09-02,US Open,Hard,Round of 64,Player S,Player T,30,8,24,27,184,186,L,R,5,160,13,3,18,4,28
