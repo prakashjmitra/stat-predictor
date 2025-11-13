@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Optional
 
 import pandas as pd
 from sklearn.compose import ColumnTransformer
@@ -19,6 +20,7 @@ def build_feature_pipeline(
     numerical = list(numerical or [])
 
     transformers: List[Tuple[str, object, List[str]]] = []
+    transformers: List[tuple[str, object, List[str]]] = []
     if categorical:
         transformers.append(
             (
@@ -29,6 +31,7 @@ def build_feature_pipeline(
                         ("encode", OneHotEncoder(handle_unknown="ignore")),
                     ]
                 ),
+                OneHotEncoder(handle_unknown="ignore"),
                 categorical,
             )
         )
@@ -42,6 +45,7 @@ def build_feature_pipeline(
                         ("scale", StandardScaler()),
                     ]
                 ),
+                StandardScaler(),
                 numerical,
             )
         )

@@ -7,6 +7,14 @@ from typing import Iterable, List, Tuple
 
 import pandas as pd
 import requests
+from typing import Iterable, List
+
+import pandas as pd
+import requests
+from pathlib import Path
+from typing import Iterable
+
+import pandas as pd
 
 from .config import DataConfig
 
@@ -54,6 +62,9 @@ def load_matches(config: DataConfig) -> pd.DataFrame:
     df = pd.read_csv(path)
     df = _normalize_dataset(df)
 
+        raise FileNotFoundError(f"Could not find dataset at {path}")
+
+    df = pd.read_csv(path, parse_dates=[config.date_column])
     missing = REQUIRED_COLUMNS.union(config.target_columns) - set(df.columns)
     if missing:
         missing_str = ", ".join(sorted(missing))
@@ -140,6 +151,7 @@ def _transform_atp_matches(df: pd.DataFrame) -> pd.DataFrame:
 def split_train_test(
     df: pd.DataFrame, config: DataConfig
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Split a dataframe into train and test partitions by date."""
 
     if df.empty:
@@ -159,6 +171,7 @@ def split_train_test(
 def get_feature_target_frames(
     df: pd.DataFrame, target_columns: Iterable[str]
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Return the feature and target frames from a dataframe."""
 
     targets = list(target_columns)

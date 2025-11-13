@@ -2,6 +2,7 @@
 from .config import DataConfig, ModelConfig, TrainingConfig, default_training_config
 from .predict import load_model, predict_stats
 from .training import TrainingResult, train_and_evaluate
+from .training import train_and_evaluate
 
 __all__ = [
     "DataConfig",
